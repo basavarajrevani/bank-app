@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Banking Dashboard</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: #f0f2f5;
+        }
+
+        .navbar {
+            background: #00416A;
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar h1 {
+            font-size: 1.5rem;
+        }
+
+        .logout-btn {
+            background: none;
+            border: 1px solid white;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .logout-btn:hover {
+            background: white;
+            color: #00416A;
+        }
+
+        .dashboard {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .balance-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .balance-amount {
+            font-size: 2.5rem;
+            color: #00416A;
+            margin: 1rem 0;
+        }
+
+        .transaction-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .transaction-form {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .transaction-form h3 {
+            color: #00416A;
+            margin-bottom: 1rem;
+        }
+
+        .input-group {
+            margin-bottom: 1rem;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #666;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 0.8rem;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .deposit-btn {
+            background: #28a745;
+        }
+
+        .deposit-btn:hover {
+            background: #218838;
+        }
+
+        .withdraw-btn {
+            background: #dc3545;
+        }
+
+        .withdraw-btn:hover {
+            background: #c82333;
+        }
+
+        .transactions {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .transactions h3 {
+            color: #00416A;
+            margin-bottom: 1rem;
+        }
+
+        .transaction-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .transaction-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .transaction-item:last-child {
+            border-bottom: none;
+        }
+
+        .transaction-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .transaction-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .deposit {
+            background: #28a745;
+        }
+
+        .withdraw {
+            background: #dc3545;
+        }
+
+        .transaction-details {
+            flex-grow: 1;
+        }
+
+        .transaction-amount {
+            font-weight: bold;
+        }
+
+        .transaction-date {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .language-selector {
+            margin-right: 15px;
+        }
+
+        .language-selector select {
+            padding: 8px 12px;
+            border-radius: 4px;
+            border: 1px solid white;
+            outline: none;
+            font-size: 14px;
+            cursor: pointer;
+            background: transparent;
+            color: white;
+            min-width: 120px;
+        }
+
+        .language-selector select:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .language-selector select option {
+            background: white;
+            color: #00416A;
+        }
+
+        @media (max-width: 768px) {
+            .transaction-buttons {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <h1>Welcome, <span id="userName" data-translate="welcome">User</span></h1>
+        <div style="display: flex; align-items: center;">
+            <div class="language-selector">
+                <select onchange="changeLanguage(this.value)">
+                    <option value="en">English</option>
+                    <option value="hi">हिंदी</option>
+                    <option value="kn">ಕನ್ನಡ</option>
+                    <option value="te">తెలుగు</option>
+                    <option value="ta">தமிழ்</option>
+                </select>
+            </div>
+            <button class="logout-btn" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i> <span data-translate="logout">Logout</span>
+            </button>
+        </div>
+    </nav>
+
+    <div class="dashboard">
+        <div class="balance-card">
+            <h3 data-translate="current-balance">Current Balance</h3>
+            <div class="balance-amount"><span id="balance">0.00</span></div>
+        </div>
+
+        <div class="transaction-buttons">
+            <div class="transaction-form">
+                <h3 data-translate="deposit">Deposit</h3>
+                <div class="input-group">
+                    <label data-translate="amount">Amount</label>
+                    <input type="number" id="depositAmount" min="1" step="0.01" required>
+                </div>
+                <div class="input-group">
+                    <label data-translate="description">Description (Optional)</label>
+                    <input type="text" id="depositDescription">
+                </div>
+                <button class="btn deposit-btn" onclick="handleTransaction('deposit')">
+                    <span data-translate="deposit-funds">Deposit Funds</span>
+                </button>
+            </div>
+
+            <div class="transaction-form">
+                <h3 data-translate="withdraw">Withdraw</h3>
+                <div class="input-group">
+                    <label data-translate="amount">Amount</label>
+                    <input type="number" id="withdrawAmount" min="1" step="0.01" required>
+                </div>
+                <div class="input-group">
+                    <label data-translate="description">Description (Optional)</label>
+                    <input type="text" id="withdrawDescription">
+                </div>
+                <button class="btn withdraw-btn" onclick="handleTransaction('withdraw')">
+                    <span data-translate="withdraw-funds">Withdraw Funds</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="transactions">
+            <h3 data-translate="transaction-history">Transaction History</h3>
+            <table id="transactionTable">
+                <thead>
+                    <tr>
+                        <th data-translate="date">Date</th>
+                        <th data-translate="type">Type</th>
+                        <th data-translate="amount">Amount</th>
+                        <th data-translate="description">Description</th>
+                    </tr>
+                </thead>
+                <tbody id="transactionBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        // Check if user is logged in
+        function checkAuth() {
+            const userData = localStorage.getItem('userData');
+            if (!userData) {
+                window.location.replace('/index.html');
+                return null;
+            }
+            return JSON.parse(userData);
+        }
+
+        // Load user profile
+        async function loadUserProfile() {
+            const user = checkAuth();
+            if (!user) return;
+
+            document.getElementById('userName').textContent = user.name;
+            document.getElementById('balance').textContent = `$${user.balance.toFixed(2)}`;
+        }
+
+        // Load transaction history
+        async function loadTransactions() {
+            const user = checkAuth();
+            if (!user) return;
+
+            try {
+                const response = await fetch(`http://localhost:3000/api/transactions/${user.accountNumber}`);
+                const data = await response.json();
+
+                const transactionList = document.getElementById('transactionBody');
+                transactionList.innerHTML = '';
+
+                if (response.ok && data.transactions) {
+                    if (data.transactions.length === 0) {
+                        transactionList.innerHTML = '<tr><td colspan="4">No transactions yet</td></tr>';
+                        return;
+                    }
+
+                    data.transactions.forEach(transaction => {
+                        const date = new Date(transaction.createdAt).toLocaleDateString();
+                        const type = transaction.type;
+                        const amount = transaction.amount.toFixed(2);
+                        const balance = transaction.balance.toFixed(2);
+                        
+                        transactionList.innerHTML += `
+                            <tr>
+                                <td>${date}</td>
+                                <td>${type}</td>
+                                <td class="${transaction.type === 'deposit' ? 'deposit' : 'withdraw'}">
+                                    ${transaction.type === 'deposit' ? '+' : '-'}$${amount}
+                                </td>
+                                <td>${transaction.description || type.charAt(0).toUpperCase() + type.slice(1)}</td>
+                            </tr>
+                        `;
+                    });
+                } else {
+                    transactionList.innerHTML = '<tr><td colspan="4">Error loading transactions</td></tr>';
+                }
+            } catch (error) {
+                console.error('Error loading transactions:', error);
+                document.getElementById('transactionBody').innerHTML = 
+                    '<tr><td colspan="4">Error loading transactions</td></tr>';
+            }
+        }
+
+        // Handle transaction (deposit/withdraw)
+        async function handleTransaction(type) {
+            const user = checkAuth();
+            if (!user) return;
+
+            const amount = parseFloat(document.getElementById(`${type}Amount`).value);
+            const description = document.getElementById(`${type}Description`).value;
+
+            if (isNaN(amount) || amount <= 0) {
+                alert('Please enter a valid amount');
+                return;
+            }
+
+            try {
+                const response = await fetch('http://localhost:3000/api/transaction', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        accountNumber: user.accountNumber,
+                        type,
+                        amount,
+                        description
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    // Update local storage with new balance
+                    user.balance = data.newBalance;
+                    localStorage.setItem('userData', JSON.stringify(user));
+                    
+                    // Update UI
+                    document.getElementById('balance').textContent = `$${data.newBalance.toFixed(2)}`;
+                    
+                    // Clear form
+                    document.getElementById(`${type}Amount`).value = '';
+                    document.getElementById(`${type}Description`).value = '';
+                    
+                    // Reload transactions
+                    loadTransactions();
+                } else {
+                    alert(data.error || 'Transaction failed');
+                }
+            } catch (error) {
+                console.error('Transaction error:', error);
+                alert('Error processing transaction');
+            }
+        }
+
+        // Logout function
+        function logout() {
+            localStorage.removeItem('userData');
+            window.location.replace('/index.html');
+        }
+
+        let currentLanguage = localStorage.getItem('preferredLanguage') || 'en';
+        let translations = {};
+
+        async function loadTranslations(lang) {
+            try {
+                const response = await fetch(`translations/${lang}.json`);
+                translations = await response.json();
+                updatePageText();
+                // Reload transactions to update their translations
+                await loadTransactions();
+            } catch (error) {
+                console.error('Error loading translations:', error);
+            }
+        }
+
+        function updatePageText() {
+            document.querySelectorAll('[data-translate]').forEach(element => {
+                const key = element.getAttribute('data-translate');
+                if (translations[key]) {
+                    element.textContent = translations[key];
+                }
+            });
+        }
+
+        function changeLanguage(lang) {
+            currentLanguage = lang;
+            localStorage.setItem('preferredLanguage', lang);
+            loadTranslations(lang);
+        }
+
+        // Initialize language
+        document.addEventListener('DOMContentLoaded', () => {
+            loadTranslations(currentLanguage);
+            loadUserProfile();
+            loadTransactions();
+        });
+    </script>
+</body>
+</html>
