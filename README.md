@@ -1,4 +1,4 @@
-🏦# simple Bank Application
+🏦 simple Bank Application
 A basic banking application that allows users to manage their accounts with essential banking operations.
 
 🚀 Features
