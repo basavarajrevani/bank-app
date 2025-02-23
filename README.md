@@ -1,4 +1,16 @@
-# Banking Application Setup Guide
+🏦 Simple Bank App
+A basic banking application that allows users to manage their accounts with essential banking operations.
+
+🚀 Features
+🔹 User Registration & Login
+🔹 multi language support 
+🔹 generates unique Account number to particular user 
+🔹 Deposit & Withdraw Money
+🔹 Check Account Balance
+🔹 Transaction History
+🔹 Simple UI for Easy Navigation
+
+# simple Banking Application Setup Guide
 
 ## Prerequisites
 1. Node.js (Download and install from https://nodejs.org/)
