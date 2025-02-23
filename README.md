@@ -34,7 +34,7 @@ This will install all required dependencies:
 Make sure your `.env` file contains:
 ```env
 PORT=3000
-MONGODB_URI=mongodb+srv://snisarga1si22is061:hTwgr5pHrksrcLZn@cluster0.mnjxb.mongodb.net/bankingApp?retryWrites=true&w=majority
+MONGODB_URI="mongodb URL"
 JWT_SECRET=your_jwt_secret_key_here
 ```
 
