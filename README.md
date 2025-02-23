@@ -1,7 +1,7 @@
 🏦 simple Bank Application - 
 A basic banking application that allows users to manage their accounts with essential banking operations.
 
-🚀 Features
+🚀 Features - 
 🔹 User Registration & Login
 🔹 multi language support 
 🔹 generates unique Account number to particular user 
